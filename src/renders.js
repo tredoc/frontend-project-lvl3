@@ -2,7 +2,7 @@ const renderRss = (feeds, parentSelector) => {
   const parent = document.querySelector(parentSelector);
   parent.innerHTML = '';
 
-  for (const feed of feeds) {
+  feeds.map((feed) => {
     const h2 = document.createElement('h2');
     h2.textContent = feed.feedTitle;
     const h5 = document.createElement('h5');
@@ -17,10 +17,13 @@ const renderRss = (feeds, parentSelector) => {
 
       div.append(a);
       parent.prepend(div);
+
+      return null; // в угоду линтеру
     });
     parent.prepend(h5);
     parent.prepend(h2);
-  }
+    return null; // в угоду линтеру
+  });
 };
 
 export default renderRss;

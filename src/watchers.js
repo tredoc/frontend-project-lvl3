@@ -1,4 +1,5 @@
 import onChange from 'on-change';
+import i18next from 'i18next';
 import renderRss from './renders';
 
 const form = document.querySelector('form');
@@ -11,7 +12,8 @@ export default (state) => {
     if (path === 'form.valid') {
       if (value === true) {
         input.classList.remove('input-warning');
-        errorMessage.textContent = 'valid';
+        errorMessage.textContent = i18next.t('errors.valid');
+        errorMessage.style.color = 'green';
         button.disabled = false;
       } else {
         input.classList.add('input-warning');
@@ -20,11 +22,9 @@ export default (state) => {
     }
 
     if (path === 'form.processError') {
-      console.log(value);
       if (value.length) {
-        errorMessage.textContent = value[0].type;
-      } else {
-        console.log('ololo');
+        errorMessage.textContent = i18next.t(`errors.${[value[0].type]}`);
+        errorMessage.style.color = 'red';
       }
     }
     // if (path === 'posts') {
@@ -39,17 +39,21 @@ export default (state) => {
         case 'sending':
           console.log('form is sending!');
           button.disabled = true;
-          errorMessage.textContent = 'sending';
+          errorMessage.textContent = i18next.t('statuses.sending');
+          errorMessage.style.color = 'blue';
           break;
         case 'finished':
           console.log('finished!');
           renderRss(watchedState.feeds, '.rss-links');
           button.disabled = false;
           input.value = '';
-          errorMessage.textContent = 'ready';
+          errorMessage.textContent = i18next.t('statuses.ready');
+          errorMessage.style.color = 'green';
           break;
         case 'failed':
-          console.log('ну, тут очевидно нет связи');
+          console.log('failed');
+          errorMessage.textContent = i18next.t('statuses.failed');
+          errorMessage.style.color = 'red';
           break;
         default:
           console.log('unknown state');

@@ -9,11 +9,12 @@ const parser = (data) => {
   const channelDescription = parsed.querySelector('channel>description').textContent;
 
   const items = [...parsed.querySelectorAll('item')].map((item) => {
-    return {
-      text: item.querySelector('title').textContent,
-      href: item.querySelector('link').textContent,
-      description: item.querySelector('description').textContent,
-    };
+    const obj = {};
+    obj.text = item.querySelector('title').textContent;
+    obj.href = item.querySelector('link').textContent;
+    obj.description = item.querySelector('description').textContent;
+
+    return obj;
   });
 
   return {
