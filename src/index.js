@@ -1,3 +1,4 @@
 import 'bootstrap';
+import app from './app';
 
-export default (a, b) => a + b;
+app();
