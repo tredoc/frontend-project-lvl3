@@ -40,7 +40,7 @@ export default (state) => {
           console.log('form is sending!');
           button.disabled = true;
           errorMessage.textContent = i18next.t('statuses.sending');
-          errorMessage.style.color = 'blue';
+          errorMessage.style.color = '#007bff';
           break;
         case 'finished':
           console.log('finished!');
@@ -48,7 +48,7 @@ export default (state) => {
           button.disabled = false;
           input.value = '';
           errorMessage.textContent = i18next.t('statuses.ready');
-          errorMessage.style.color = 'green';
+          errorMessage.style.color = '#25a925';
           break;
         case 'failed':
           console.log('failed');
