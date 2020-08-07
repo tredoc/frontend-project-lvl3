@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Новые уроки на Хекслете</title>
+        <description>Практические уроки по программированию</description>
+        <link>https://ru.hexlet.io/</link>
+        <webMaster>info@hexlet.io</webMaster>
+        <item>
+            <title>Позиционирование и Grid / CSS: Grid</title>
+            <guid isPermaLink="false">1807</guid>
+            <link>https://ru.hexlet.io/courses/css-grid/lessons/position-in-grid/theory_unit</link>
+            <description>Цель: Изучить влияние свойств позиционирования и z-index при использовании внутри сетки</description>
+            <pubDate>Fri, 31 Jul 2020 18:19:31 +0000</pubDate>
+        </item>
+        <item>
+            <title>Базовая структура HTML документа / Основы современной вёрстки</title>
+            <guid isPermaLink="false">1804</guid>
+            <link>https://ru.hexlet.io/courses/layout-designer-basics/lessons/page-structure/theory_unit</link>
+            <description>Цель: Изучить основные теги и элементы, которые присутствуют в любом HTML документе</description>
+            <pubDate>Thu, 30 Jul 2020 10:21:11 +0000</pubDate>
+        </item>
+        <item>
+            <title>toString() / JS: Введение в ООП</title>
+            <guid isPermaLink="false">1681</guid>
+            <link>https://ru.hexlet.io/courses/js-introduction-to-oop/lessons/to-string/theory_unit</link>
+            <description>Цель: Познакомиться с удобным способом представлять объекты в виде строк</description>
+            <pubDate>Mon, 27 Jul 2020 01:38:45 +0000</pubDate>
+        </item>
+        <item>
+            <title>Модуль 3. Урок 2. Аргументы и результаты работы методов. Рефакторинг. / Введение в Java</title>
+            <guid isPermaLink="false">1801</guid>
+            <link>https://ru.hexlet.io/courses/java_101/lessons/methods_arguments_return/theory_unit</link>
+            <description>Цель: Понять то, как испоьльзовать методы, их аргуметы и результаты работы. Узнать про схему MVC. Научиться редактировать ранее написаный код (рефакторинг).</description>
+            <pubDate>Tue, 21 Jul 2020 21:22:33 +0000</pubDate>
+        </item>
+        <item>
+            <title>Spread-оператор / PHP: Массивы</title>
+            <guid isPermaLink="false">1800</guid>
+            <link>https://ru.hexlet.io/courses/php-arrays/lessons/spread-operator/theory_unit</link>
+            <description>Цель: Научиться применять spread-оператор (оператор "расширения") для массивов.</description>
+            <pubDate>Tue, 21 Jul 2020 12:15:45 +0000</pubDate>
+        </item>
+        <item>
+            <title>Неявная сетка / CSS: Grid</title>
+            <guid isPermaLink="false">1799</guid>
+            <link>https://ru.hexlet.io/courses/css-grid/lessons/implicit-grid/theory_unit</link>
+            <description>Цель: Узнать отличия явной и неявной сетки. Изучить свойства grid-auto-rows и grid-auto-columns</description>
+            <pubDate>Mon, 20 Jul 2020 13:06:46 +0000</pubDate>
+        </item>
+        <item>
+            <title>События на практике / JS: DOM API</title>
+            <guid isPermaLink="false">1798</guid>
+            <link>https://ru.hexlet.io/courses/js-dom/lessons/events-in-action/theory_unit</link>
+            <description>Цель: Научиться создавать интерактивные компоненты</description>
+            <pubDate>Fri, 10 Jul 2020 03:59:07 +0000</pubDate>
+        </item>
+        <item>
+            <title>Работа с сеткой / CSS: Grid</title>
+            <guid isPermaLink="false">1796</guid>
+            <link>https://ru.hexlet.io/courses/css-grid/lessons/grid-property/theory_unit</link>
+            <description>Цель: Изучить отступы между полосами и выравнивание полос сетки.</description>
+            <pubDate>Tue, 30 Jun 2020 17:59:42 +0000</pubDate>
+        </item>
+        <item>
+            <title>Расположение элементов в сетке / CSS: Grid</title>
+            <guid isPermaLink="false">1795</guid>
+            <link>https://ru.hexlet.io/courses/css-grid/lessons/element-position/theory_unit</link>
+            <description>Цель: Изучить свойства, позволяющие произвольно располагать элементы внутри сетки. Научиться именовать линии/области и использовать их при расположении элементов.</description>
+            <pubDate>Sun, 28 Jun 2020 15:02:47 +0000</pubDate>
+        </item>
+        <item>
+            <title>Первая сетка / CSS: Grid</title>
+            <guid isPermaLink="false">1794</guid>
+            <link>https://ru.hexlet.io/courses/css-grid/lessons/first-grid/theory_unit</link>
+            <description>Цель: Узнать о свойствах, позволяющие создавать сетки с помощью CSS Grid Layout. Создать первую 12 колоночную сетку. Познакомиться с единицами измерения fr</description>
+            <pubDate>Sun, 28 Jun 2020 15:02:40 +0000</pubDate>
+        </item>
+    </channel>
+</rss>

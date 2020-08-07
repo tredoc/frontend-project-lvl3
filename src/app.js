@@ -1,4 +1,5 @@
 import * as axios from 'axios';
+import _ from 'lodash';
 import i18next from 'i18next';
 import parser from './parser';
 import watchState from './watchers';
@@ -26,19 +27,20 @@ const app = () => {
         processError: null,
         rssRequest: '',
         valid: true,
-        errors: {},
       },
       feeds: [],
+      links: [],
+      needUpdate: false,
     };
 
     const watchedState = watchState(state);
-    let linksList = [];
 
     input.addEventListener('input', () => {
       watchedState.form.processState = 'filling';
-      watchedState.form.rssRequest = input.value;
+      watchedState.form.rssRequest = input.value.trim();
 
-      const validationErrors = validate(watchedState.form.rssRequest, linksList);
+      const feedsLinksList = watchedState.feeds.map((feed) => feed.link);
+      const validationErrors = validate(watchedState.form.rssRequest, feedsLinksList);
 
       if (!validationErrors.length) {
         watchedState.form.valid = true;
@@ -46,32 +48,64 @@ const app = () => {
         watchedState.form.valid = false;
         watchedState.form.processError = validationErrors;
       }
-      console.log(state);
     });
+
+    const makeRequest = (feedUrl) => {
+      const proxy = 'https://cors-anywhere.herokuapp.com/';
+      return axios.get(`${proxy}${feedUrl}`);
+    };
 
     form.addEventListener('submit', (evt) => {
       evt.preventDefault();
       watchedState.form.processState = 'sending';
 
-      const makeRequest = (feed) => {
-        const proxy = 'https://cors-anywhere.herokuapp.com/';
+      makeRequest(watchedState.form.rssRequest)
+        .then((data) => {
+          const feedObj = parser(data.data);
+          const feed = feedObj.feedData;
+          feed.id = _.uniqueId();
+          feed.link = watchedState.form.rssRequest;
 
-        axios.get(`${proxy}${feed}`)
-          .then((data) => {
-            watchedState.feeds = [...watchedState.feeds, parser(data.data)];
-            watchedState.form.processState = 'finished';
-            linksList = [...linksList, watchedState.form.rssRequest];
-            watchedState.form.rssRequest = '';
-          })
-          .catch((err) => {
-            watchedState.form.processState = 'failed';
-            if (err.response) {
-              console.log(err.response.status);
+          const links = feedObj.feedLinks.map((link) => ({ ...link, feedId: feed.id }));
+          console.log('LINKS ', links);
+          watchedState.feeds = [...watchedState.feeds, feed];
+          watchedState.links = [...watchedState.links, ...links];
+
+          watchedState.form.processState = 'finished';
+          watchedState.form.needUpdate = true;
+          watchedState.form.rssRequest = '';
+        })
+        .catch((err) => {
+          watchedState.form.processState = 'failed';
+          if (err.response) {
+            console.log(err.response.status);
+          }
+        });
+    });
+
+    const updateFeed = () => {
+      if (!watchedState.feeds.length) {
+        setTimeout(updateFeed, 5000);
+        return;
+      }
+
+      watchedState.feeds.forEach((feed) => {
+        const watchedLinks = watchedState.links.map((item) => item.title);
+        makeRequest(feed.link)
+          .then((data) => parser(data.data))
+          .then((updFeed) => {
+            const { feedLinks } = updFeed;
+            const filtered = feedLinks.filter((link) => !watchedLinks.includes(link.title));
+            if (filtered.length) {
+              const linksWithId = feedLinks.map((link) => ({ ...link, feedId: feed.id }));
+              watchedState.links = [...watchedState.links, ...linksWithId];
             }
           });
-      };
-      makeRequest(watchedState.form.rssRequest);
-    });
+      });
+      console.log('no changes, restart timer');
+      setTimeout(updateFeed, 5000);
+    };
+    updateFeed();
   });
 };
 

@@ -8,9 +8,9 @@ const parser = (data) => {
   const channelName = parsed.querySelector('channel>title').textContent;
   const channelDescription = parsed.querySelector('channel>description').textContent;
 
-  const items = [...parsed.querySelectorAll('item')].map((item) => {
+  const links = [...parsed.querySelectorAll('item')].map((item) => {
     const obj = {};
-    obj.text = item.querySelector('title').textContent;
+    obj.title = item.querySelector('title').textContent;
     obj.href = item.querySelector('link').textContent;
     obj.description = item.querySelector('description').textContent;
 
@@ -18,9 +18,11 @@ const parser = (data) => {
   });
 
   return {
-    feedTitle: channelName,
-    feedDescription: channelDescription,
-    links: items,
+    feedData: {
+      feedTitle: channelName,
+      feedDescription: channelDescription,
+    },
+    feedLinks: links,
   };
 };
 
