@@ -1,7 +1,7 @@
 import * as axios from 'axios';
 import _ from 'lodash';
 import i18next from 'i18next';
-import parser from './parser';
+import parse from './parser';
 import watchState from './watchers';
 import validate from './validate';
 import ru from './locales/ru';
@@ -60,11 +60,11 @@ const app = () => {
       watchedState.form.processState = 'sending';
 
       makeRequest(watchedState.form.rssRequest)
-        .then((data) => {
-          const feedObj = parser(data.data);
+        .then((response) => {
+          const feedObj = parse(response.data);
           const feed = feedObj.feedData;
           feed.id = _.uniqueId();
-          feed.link = watchedState.form.rssRequest;
+          feed.url = watchedState.form.rssRequest;
 
           const links = feedObj.feedLinks.map((link) => ({ ...link, feedId: feed.id }));
           console.log('LINKS ', links);
@@ -90,9 +90,9 @@ const app = () => {
       }
 
       watchedState.feeds.forEach((feed) => {
-        const watchedLinks = watchedState.links.map((item) => item.title);
-        makeRequest(feed.link)
-          .then((data) => parser(data.data))
+        const watchedLinks = watchedState.links.map((link) => link.title);
+        makeRequest(feed.url)
+          .then((response) => parse(response.data))
           .then((updFeed) => {
             const { feedLinks } = updFeed;
             const filtered = feedLinks.filter((link) => !watchedLinks.includes(link.title));

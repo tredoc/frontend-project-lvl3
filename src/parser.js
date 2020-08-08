@@ -1,4 +1,4 @@
-const parser = (data) => {
+const parse = (data) => {
   const parsed = new window.DOMParser().parseFromString(data, 'text/xml');
 
   if (parsed.firstChild.tagName !== 'rss') {
@@ -26,4 +26,4 @@ const parser = (data) => {
   };
 };
 
-export default parser;
+export default parse;

@@ -32,8 +32,7 @@ export const renderLinks = (links) => {
     a.href = link.href;
     a.title = link.description;
     const { feedId } = link;
-    const parentDiv = document.querySelector(`#feed-${feedId}`);
-    const parent = parentDiv.querySelector('.links');
-    parent.append(a);
+    const linksDiv = document.querySelector(`#feed-${feedId} .links`);
+    linksDiv.append(a);
   });
 };
