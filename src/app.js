@@ -9,6 +9,12 @@ import ru from './locales/ru';
 const form = document.querySelector('form');
 const input = form.querySelector('input');
 const button = form.querySelector('button');
+const userMessage = document.querySelector('.user-message');
+
+const makeRequest = (feedUrl) => {
+  const proxy = 'https://cors-anywhere.herokuapp.com/';
+  return axios.get(`${proxy}${feedUrl}`);
+};
 
 const app = () => {
   i18next.init({
@@ -29,20 +35,21 @@ const app = () => {
         valid: true,
       },
       feeds: [],
-      links: [],
+      posts: [],
       needUpdate: false,
     };
 
-    const watchedState = watchState(state);
+    const watchedState = watchState(state, input, button, userMessage);
+    const updatePeriod = 5000;
 
     input.addEventListener('input', () => {
       watchedState.form.processState = 'filling';
       watchedState.form.rssRequest = input.value.trim();
 
-      const feedsLinksList = watchedState.feeds.map((feed) => feed.link);
+      const feedsLinksList = watchedState.feeds.map((feed) => feed.url);
       const validationErrors = validate(watchedState.form.rssRequest, feedsLinksList);
 
-      if (!validationErrors.length) {
+      if (validationErrors.length === 0) {
         watchedState.form.valid = true;
       } else {
         watchedState.form.valid = false;
@@ -50,26 +57,20 @@ const app = () => {
       }
     });
 
-    const makeRequest = (feedUrl) => {
-      const proxy = 'https://cors-anywhere.herokuapp.com/';
-      return axios.get(`${proxy}${feedUrl}`);
-    };
-
-    form.addEventListener('submit', (evt) => {
-      evt.preventDefault();
+    const getFeed = (event) => {
+      event.preventDefault();
       watchedState.form.processState = 'sending';
 
       makeRequest(watchedState.form.rssRequest)
         .then((response) => {
           const feedObj = parse(response.data);
           const feed = feedObj.feedData;
-          feed.id = _.uniqueId();
+          feed.id = Number(_.uniqueId());
           feed.url = watchedState.form.rssRequest;
+          const posts = feedObj.feedPosts.map((post) => ({ ...post, feedId: feed.id }));
 
-          const links = feedObj.feedLinks.map((link) => ({ ...link, feedId: feed.id }));
-          console.log('LINKS ', links);
           watchedState.feeds = [...watchedState.feeds, feed];
-          watchedState.links = [...watchedState.links, ...links];
+          watchedState.posts = [...watchedState.posts, ...posts];
 
           watchedState.form.processState = 'finished';
           watchedState.form.needUpdate = true;
@@ -81,31 +82,30 @@ const app = () => {
             console.log(err.response.status);
           }
         });
-    });
+    };
 
-    const updateFeed = () => {
-      if (!watchedState.feeds.length) {
-        setTimeout(updateFeed, 5000);
+    form.addEventListener('submit', getFeed);
+
+    const updateFeed = () => { // не понимаю в чем профит выноса наверх
+      if (watchedState.feeds.length === 0) {
+        setTimeout(updateFeed, updatePeriod);
         return;
       }
 
-      watchedState.feeds.forEach((feed) => {
-        const watchedLinks = watchedState.links.map((link) => link.title);
-        makeRequest(feed.url)
-          .then((response) => parse(response.data))
-          .then((updFeed) => {
-            const { feedLinks } = updFeed;
-            const filtered = feedLinks.filter((link) => !watchedLinks.includes(link.title));
-            if (filtered.length) {
-              const linksWithId = feedLinks.map((link) => ({ ...link, feedId: feed.id }));
-              watchedState.links = [...watchedState.links, ...linksWithId];
-            }
-          });
-      });
-      console.log('no changes, restart timer');
-      setTimeout(updateFeed, 5000);
+      const promises = watchedState.feeds.map((feed) => makeRequest(feed.url));
+      Promise.all(promises)
+        .then((data) => data.forEach((response, index) => {
+          const { feedPosts } = parse(response.data);
+          const postsWithId = feedPosts.map((post) => ({ ...post, feedId: index + 1 }));
+          const diff = _.differenceWith(postsWithId, watchedState.posts, _.isEqual);
+          if (diff.length > 0) {
+            watchedState.posts = [...diff, ...watchedState.posts];
+          }
+        }));
+
+      setTimeout(updateFeed, updatePeriod);
     };
-    updateFeed();
+    updateFeed(watchedState, updatePeriod);
   });
 };
 

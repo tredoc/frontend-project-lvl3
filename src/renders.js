@@ -22,16 +22,16 @@ export const renderFeed = (feeds, parentSelector) => {
   });
 };
 
-export const renderLinks = (links) => {
+export const renderLinks = (posts) => {
   const parents = document.querySelectorAll('.links');
   parents.forEach((parent) => parent.innerHTML = ''); // eslint-disable-line
 
-  links.forEach((link) => {
+  posts.forEach((post) => {
     const a = document.createElement('a');
-    a.textContent = link.title;
-    a.href = link.href;
-    a.title = link.description;
-    const { feedId } = link;
+    a.textContent = post.title;
+    a.href = post.href;
+    a.title = post.description;
+    const { feedId } = post;
     const linksDiv = document.querySelector(`#feed-${feedId} .links`);
     linksDiv.append(a);
   });

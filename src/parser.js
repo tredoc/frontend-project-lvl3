@@ -1,18 +1,23 @@
-const parse = (data) => {
-  const parsed = new window.DOMParser().parseFromString(data, 'text/xml');
+const parse = (data) => { // Не сообразил как нормально вернуть ошибку парсинга
+  let parsedData;
+  try {
+    parsedData = new window.DOMParser().parseFromString(data, 'text/xml');
+  } catch (error) {
+    throw new Error(`${error} Cant parse data`);
+  }
 
-  if (parsed.firstChild.tagName !== 'rss') {
+  if (parsedData.firstChild.tagName !== 'rss') {
     throw new Error('wrong data type');
   }
 
-  const channelName = parsed.querySelector('channel>title').textContent;
-  const channelDescription = parsed.querySelector('channel>description').textContent;
-
-  const links = [...parsed.querySelectorAll('item')].map((item) => {
+  const channelName = parsedData.querySelector('channel>title').textContent;
+  const channelDescription = parsedData.querySelector('channel>description').textContent;
+  const channelPosts = parsedData.querySelectorAll('item');
+  const posts = [...channelPosts].map((post) => {
     const obj = {};
-    obj.title = item.querySelector('title').textContent;
-    obj.href = item.querySelector('link').textContent;
-    obj.description = item.querySelector('description').textContent;
+    obj.title = post.querySelector('title').textContent;
+    obj.href = post.querySelector('link').textContent;
+    obj.description = post.querySelector('description').textContent;
 
     return obj;
   });
@@ -22,7 +27,7 @@ const parse = (data) => {
       feedTitle: channelName,
       feedDescription: channelDescription,
     },
-    feedLinks: links,
+    feedPosts: posts,
   };
 };
 
