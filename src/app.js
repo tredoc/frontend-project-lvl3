@@ -6,7 +6,7 @@ import watchState from './watchers';
 import validate from './validate';
 import ru from './locales/ru';
 
-const updatePeriod = 5000;
+const UPDATE_PERIOD = 5000;
 
 const app = () => {
   const form = document.querySelector('form');
@@ -50,9 +50,9 @@ const app = () => {
       });
   };
 
-  const updateFeed = (state, updateInterval) => {
+  const updateFeed = (state, updatePeriod) => {
     if (state.needUpdate) {
-      setTimeout(() => updateFeed(state, updateInterval), updateInterval);
+      setTimeout(() => updateFeed(state, updatePeriod), updatePeriod);
       return;
     }
 
@@ -68,7 +68,7 @@ const app = () => {
         }
       }))
       .then(() => {
-        setTimeout(() => updateFeed(state, updateInterval), updateInterval);
+        setTimeout(() => updateFeed(state, updatePeriod), updatePeriod);
       });
   };
 
@@ -112,7 +112,7 @@ const app = () => {
     });
 
     form.addEventListener('submit', (event) => getFeed(event, watchedState));
-    updateFeed(watchedState, updatePeriod);
+    updateFeed(watchedState, UPDATE_PERIOD);
   });
 };
 
