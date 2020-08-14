@@ -19,11 +19,14 @@ export default (state, ...elements) => {
 
     if (path === 'form.processError') {
       if (value.length > 0) {
-        userMessage.textContent = i18next.t(`errors.${[value[0].type]}`);
-        userMessage.style.color = 'red';
+        if (typeof value === 'string') {
+          userMessage.textContent = i18next.t('errors.parserError');
+        } else {
+          userMessage.textContent = i18next.t(`errors.${[value[0].type]}`);
+          userMessage.style.color = 'red';
+        }
       }
     }
-
     if (path === 'form.processState') {
       switch (watchedState.form.processState) {
         case 'filling':

@@ -1,11 +1,5 @@
-const parse = (data) => { // Не сообразил как нормально вернуть ошибку парсинга
-  let parsedData;
-  try {
-    parsedData = new window.DOMParser().parseFromString(data, 'text/xml');
-  } catch (error) {
-    throw new Error(`${error} Cant parse data`);
-  }
-
+const parse = (data) => {
+  const parsedData = new window.DOMParser().parseFromString(data, 'text/xml');
   if (parsedData.firstChild.tagName !== 'rss') {
     throw new Error('wrong data type');
   }
