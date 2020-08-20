@@ -1,7 +1,8 @@
 const parse = (data) => {
-  const parsedData = new window.DOMParser().parseFromString(data, 'text/xml');
-  if (parsedData.firstChild.tagName !== 'rss') {
-    throw new Error('wrong data type');
+  const parsedData = new DOMParser().parseFromString(data, 'text/xml');
+  const parserError = parsedData.querySelector('parsererror');
+  if (parserError) {
+    throw new Error(`Ошибка парсера: ${parserError.textContent}`);
   }
 
   const channelName = parsedData.querySelector('channel>title').textContent;

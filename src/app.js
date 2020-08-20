@@ -20,10 +20,6 @@ const getFeed = (event, state) => {
   makeRequest(state.form.rssRequest)
     .then((response) => {
       const feedObj = parse(response.data);
-      const errors = document.querySelector('parsererror');
-      if (errors) {
-        state.form.processError = 'parserError'; // eslint-disable-line
-      }
       const feed = feedObj.feedData;
       feed.id = Number(_.uniqueId());
       feed.url = state.form.rssRequest;
@@ -40,6 +36,7 @@ const getFeed = (event, state) => {
       state.form.processState = 'failed'; // eslint-disable-line
       if (err.response) {
         console.log(err.response.status);
+        state.form.processError = err.response.status; // eslint-disable-line
       }
     });
 };
