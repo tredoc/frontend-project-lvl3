@@ -59,9 +59,6 @@ const updateFeed = (state, updatePeriod) => {
           state.posts.unshift(...diff);
         }
       })
-      .catch((err) => {
-        throw new Error(err);
-      });
   });
 
   Promise.all(promises).finally(() => {
