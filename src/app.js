@@ -58,7 +58,7 @@ const updateFeed = (state, updatePeriod) => {
         if (diff.length > 0) {
           state.posts.unshift(...diff);
         }
-      })
+      });
   });
 
   Promise.all(promises).finally(() => {
