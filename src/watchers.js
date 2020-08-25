@@ -18,6 +18,10 @@ export default (state, ...elements) => {
     }
 
     if (path === 'form.processError') {
+      if (value === 'parserError') {
+        userMessage.textContent = i18next.t('errors.parserError');
+      }
+
       if (typeof value === 'number') {
         userMessage.textContent = `${value}: ${i18next.t('statuses.failed')}`;
       } else {

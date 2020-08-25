@@ -25,8 +25,8 @@ const getFeed = (event, state) => {
       feed.url = state.form.rssRequest;
       const posts = feedObj.feedPosts.map((post) => ({ ...post, feedId: feed.id }));
 
-      state.feeds = [...state.feeds, feed]; // eslint-disable-line
-      state.posts = [...state.posts, ...posts]; // eslint-disable-line
+      state.feeds.push(feed);
+      state.posts.push(...posts);
 
       state.form.processState = 'finished'; // eslint-disable-line
       state.form.needUpdate = true; // eslint-disable-line
@@ -34,8 +34,10 @@ const getFeed = (event, state) => {
     })
     .catch((err) => {
       state.form.processState = 'failed'; // eslint-disable-line
+      if (err.message === 'parserError') {
+        state.form.processError = 'parserError'; // eslint-disable-line
+      }
       if (err.response) {
-        console.log(err.response.status);
         state.form.processError = err.response.status; // eslint-disable-line
       }
     });
@@ -47,20 +49,24 @@ const updateFeed = (state, updatePeriod) => {
     return;
   }
 
-  const feedIds = state.feeds.map((feed) => feed.id);
-  const promises = state.feeds.map((feed) => makeRequest(feed.url));
-  Promise.all(promises)
-    .then((data) => data.forEach((response, index) => {
-      const { feedPosts } = parse(response.data);
-      const postsWithId = feedPosts.map((post) => ({ ...post, feedId: feedIds[index] }));
-      const diff = _.differenceWith(postsWithId, state.posts, _.isEqual);
-      if (diff.length > 0) {
-        state.posts = [...diff, ...state.posts]; // eslint-disable-line
-      }
-    }))
-    .then(() => {
-      setTimeout(() => updateFeed(state, updatePeriod), updatePeriod);
-    });
+  const promises = state.feeds.map((feed) => { // eslint-disable-line
+    makeRequest(feed.url)
+      .then((response) => {
+        const { feedPosts } = parse(response.data);
+        const postsWithId = feedPosts.map((post) => ({ ...post, feedId: feed.id }));
+        const diff = _.differenceWith(postsWithId, state.posts, _.isEqual);
+        if (diff.length > 0) {
+          state.posts.unshift(...diff);
+        }
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
+  });
+
+  Promise.all(promises).finally(() => {
+    setTimeout(() => updateFeed(state, updatePeriod), updatePeriod);
+  });
 };
 
 const app = () => {
